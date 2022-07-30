@@ -10,10 +10,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" doubleegrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
     <script src="./js/jquery.js"></script>
     <script src="./js/con_desempenho.js"></script>
-    <title>CAOL - Controle de Atividades Online - Agence Interativa</title>
+    <title>CAOL - Controle de Atividades Online - Agence doubleerativa</title>
 </head>
 <body>
         <!--NAV MENU  -->
@@ -193,7 +193,7 @@
                             $receita_liquida = $row["RECEITA LÍQUIDA"];
                         }
                     } else {
-                       $receita_liquida = (float) 0.0;
+                       $receita_liquida = (double) 0.0;
                     }
 
                    
@@ -205,7 +205,7 @@
                             $custo_fixo = $row["CUSTO FIXO"];
                         }
                     }else{
-                        $custo_fixo = (float) 0.0;
+                        $custo_fixo = (double) 0.0;
                     }
                     //OBTER O VALOR DA COMISSÃO
                     $sql = ("SELECT FORMAT((SUM(CAO_FATURA.VALOR) - SUM(CAO_FATURA.total_imp_inc))* SUM((CAO_FATURA.comissao_cn)/ 100), 2, 'de_DE') AS 'COMISSAO' FROM CAO_SISTEMA, CAO_USUARIO, CAO_FATURA, CAO_OS WHERE CAO_SISTEMA.co_cliente = CAO_FATURA.co_cliente AND CAO_SISTEMA.co_sistema = CAO_FATURA.co_sistema
@@ -217,7 +217,7 @@
                             $comissao = $row["COMISSAO"];
                         }
                     }else{
-                        $comissao = (float) 0.0;
+                        $comissao = (double) 0.0;
                     }
 
                     //DADOS DO MES FINAL E ANO FINAL
@@ -232,7 +232,7 @@
                             $receita_liquida2 = $row["RECEITA LÍQUIDA"];
                         }
                     }else{
-                        $receita_liquida2 = (float) 0.0;
+                        $receita_liquida2 = (double) 0.0;
                     }
 
                     //OBTER O VALOR DO CUSTO FIXO
@@ -243,7 +243,7 @@
                             $custo_fixo2 = $row["CUSTO FIXO"];
                         }
                     }else{
-                        $custo_fixo2 = (float) 0.0;
+                        $custo_fixo2 = (double) 0.0;
                     }
 
                     //OBTER O VALOR DA COMISSÃO
@@ -256,10 +256,10 @@
                             $comissao2 = $row["COMISSAO"];
                         }
                     }else{
-                        $comissao2 = (float) 0.0;
+                        $comissao2 = (double) 0.0;
                     }
-                    $lucro = (float)$receita_liquida - ((float)$custo_fixo + (float)$comissao);
-                    $lucro2 = (float)$receita_liquida2 - ((float)$custo_fixo2 + (float)$comissao2);
+                    $lucro = (double)$receita_liquida - ((double)$custo_fixo + (double)$comissao);
+                    $lucro2 = (double)$receita_liquida2 - ((double)$custo_fixo2 + (double)$comissao2);
                    
                 ?>
                  <th scope="col"><?php echo "<p style='color:blue'>".$consultor."</p>";?></th>
@@ -280,21 +280,21 @@
                              echo $_SESSION["mes_inicial"]." de ".$_SESSION["ano_inicial"]?></td>
                             <td><?php 
                                 echo "R$ ";
-                                echo (float)$receita_liquida ?></td>
+                                echo number_format((double)$receita_liquida, 2,',','.');?></td>
                             <td><?php
                                  echo "R$ ";
-                                 echo  (float)$custo_fixo ?></td>
+                                 echo  number_format((double)$custo_fixo, 2,',','.'); ?></td>
                             <td><?php
                                 echo "R$ ";
-                                echo  (float)$comissao?></td>
+                                echo number_format((double)$comissao, 2,',','.');?></td>
                             <td><?php
                               
-                                if((float) $lucro < 0){
-                                    echo "<p style='color:red';> R$ ".number_format((float)$lucro, 2,',','.')."</p>"?></td>
+                                if((double) $lucro < 0){
+                                    echo "<p style='color:red';> R$ ".number_format($lucro, 2,',','.')."</p>"?></td>
                                 <?php
                                 }
                                 else{?>
-                                <?php echo "R$ ". number_format((float)$lucro,2,',','.')?></td>
+                                <?php echo "R$ ". number_format($lucro,2,',','.')?></td>
                                 <?php
                             }?>
                         </tr>
@@ -302,25 +302,25 @@
                             <td><?php echo $_SESSION["mes_final"]." de ".$_SESSION["ano_final"]?></td>
                             <td><?php 
                                 echo "R$ ";
-                                echo $receita_liquida2?></td>
+                                echo number_format((double)$receita_liquida2, 2,',','.');?></td>
                             <td><?php
                                 echo "R$ ";
-                                echo $custo_fixo2?></td>
+                                echo number_format((double)$custo_fixo2, 2,',','.');?></td>
                             <td><?php 
                                 echo "R$ ";
-                                echo $comissao2?></td>
+                                echo number_format((double)$comissao2, 2,',','.');?></td>
                             <td><?php
                                 echo "R$ ";
-                                 echo $lucro2?></td>
+                                 echo number_format((double)$lucro2, 2,',','.');?></td>
                         </tr>
                         <tr>
                             <td>Saldo</td>
                             <td><?php
-                                    $saldo_receita_liquida = (float)$receita_liquida + (float)$receita_liquida2;
-                                    echo "R$ ".$saldo_receita_liquida;?></td>
-                            <td><?php echo "R$ ".(float)$custo_fixo + (float)$custo_fixo2 ?></td>
-                            <td><?php echo "R$ ".(float)$comissao + (int)$comissao2 ?></td>
-                            <td><?php echo "R$ ".(float) $lucro2?></td>
+                                    $saldo_receita_liquida = number_format(((double)$receita_liquida + (double)$receita_liquida2), 2, ',','.');
+                                    echo "R$ ".number_format((double)$saldo_receita_liquida, 2,',','.');;?></td>
+                            <td><?php echo "R$ ".number_format(((double) $custo_fixo + (double)$custo_fixo2), 2,',','.') ?></td>
+                            <td><?php echo "R$ ".number_format(((double)$comissao + (double)$comissao2), 2,',','.') ?></td>
+                            <td><?php echo "R$ ".number_format((double) $lucro2, 2,',','.')?></td>
                         </tr>
                     </tbody>
                 </table>
@@ -328,8 +328,8 @@
             }
         }else{ echo "<h3 class='text-center'><span class='badge bg-primary'>coloque os nomes na segunda caixa e depois selecciona para gerar</span></h3>";}?>
     </div>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js" integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" doubleegrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js" doubleegrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK" crossorigin="anonymous"></script>
 <script src="https://kit.fontawesome.com/eea23026e5.js" crossorigin="anonymous"></script>
 </body>
 </html>

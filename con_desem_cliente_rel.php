@@ -171,9 +171,13 @@
             }
              $data_inicial = $_SESSION["ano_inicial"]."-".$key."-2";
              $data_final   = $_SESSION["ano_final"]."-".$key1."-2";
+             $soma_das_receitas1 = array();
+             $soma_das_receitas2 = array();
+             $soma_total = array();
     ?>
    <table id="example" class="table table-hover table-striped table-bordered w-100 table-bordered table-responsive-sm">            
-                <?php if(isset($_SESSION["clientes"])){?>   
+                <?php if(isset($_SESSION["clientes"])){?>
+                      
                 <thead>
                         <tr>
                             <th scope="col">Per&iacute;odo</th>
@@ -194,14 +198,18 @@
                             <td><?php echo $_SESSION["mes_inicial"]." de ".$_SESSION["ano_inicial"];?></td>
                             <?php
                                 foreach ($_SESSION["clientes"] as  $cliente){
-                                    $sql= ("SELECT FORMAT(SUM(CAO_FATURA.VALOR) - (SUM(CAO_FATURA.valor) * (SUM(CAO_FATURA.total_imp_inc)/100)), 2, 'de_DE') AS 'RECEITA LÍQUIDA'
-                                    FROM CAO_SISTEMA, CAO_USUARIO, CAO_FATURA, CAO_OS WHERE CAO_SISTEMA.co_cliente = CAO_FATURA.co_cliente AND CAO_SISTEMA.co_sistema = CAO_FATURA.co_sistema
-                                    AND MONTH(CAO_FATURA.data_emissao) = MONTH('$data_inicial') AND YEAR(CAO_FATURA.data_emissao) = YEAR('$data_inicial')
-                                    AND CAO_OS.co_os = CAO_FATURA.co_os AND CAO_USUARIO.co_usuario = CAO_SISTEMA.co_usuario AND CAO_SISTEMA.no_sistema = '$cliente'");
+                                    $sql= ("SELECT CAO_CLIENTE.no_fantasia,FORMAT((SUM(CAO_FATURA.valor) * (SUM(CAO_FATURA.total_imp_inc)/100)), 2, 'de_DE') AS 'RECEITA LÍQUIDA'
+                                    FROM CAO_SISTEMA, CAO_CLIENTE,CAO_USUARIO, CAO_FATURA, CAO_OS WHERE CAO_SISTEMA.co_cliente = CAO_FATURA.co_cliente AND CAO_SISTEMA.co_sistema = CAO_FATURA.co_sistema
+                                    AND MONTH('$data_inicial') = MONTH(CAO_FATURA.data_emissao) AND YEAR('$data_inicial') = YEAR(CAO_FATURA.data_emissao)
+                                    AND CAO_OS.co_os = CAO_FATURA.co_os AND CAO_USUARIO.co_usuario = CAO_SISTEMA.co_usuario
+                                    AND CAO_CLIENTE.no_fantasia= '$cliente'");
                                     $result = $conexao->query($sql);
                                     if ($result->num_rows > 0) {
                                         while($row = $result->fetch_assoc()){?>
-                                            <?php $receita_liquida = $row["RECEITA LÍQUIDA"];?>
+                                            <?php $receita_liquida = $row["RECEITA LÍQUIDA"];
+                                            array_push($soma_das_receitas1, (double)$receita_liquida);
+                                            ?>
+                                            <td><?php echo "R$ ".number_format((double)$receita_liquida, 2,',','.');?></td>
                                         <?php
                                     }?>
                                     <?php
@@ -212,22 +220,27 @@
                                     <?php
                                 }
                                 ?>
-
-
+                                <td><?php echo "R$ ".number_format(array_sum($soma_das_receitas1), 2,',','.');
+                                ?></td>
                         </tr>
                         <tr>
                             <td><?php echo $_SESSION["mes_final"]." de ".$_SESSION["ano_final"];?></td>
                            
                             <?php
                                     foreach ($_SESSION["clientes"] as $cliente) {
-                                        $sql= ("SELECT FORMAT(SUM(CAO_FATURA.VALOR) - (SUM(CAO_FATURA.valor) * (SUM(CAO_FATURA.total_imp_inc)/100)), 2, 'de_DE') AS 'RECEITA LÍQUIDA'
-                                        FROM CAO_SISTEMA, CAO_USUARIO, CAO_FATURA, CAO_OS WHERE CAO_SISTEMA.co_cliente = CAO_FATURA.co_cliente AND CAO_SISTEMA.co_sistema = CAO_FATURA.co_sistema
-                                        AND MONTH(CAO_FATURA.data_emissao) = MONTH('$data_final') AND YEAR(CAO_FATURA.data_emissao) = YEAR('$data_final')
-                                        AND CAO_OS.co_os = CAO_FATURA.co_os AND CAO_USUARIO.co_usuario = CAO_SISTEMA.co_usuario AND CAO_SISTEMA.no_sistema = '$cliente'");
+                                        $sql= ("SELECT CAO_CLIENTE.no_fantasia,FORMAT((SUM(CAO_FATURA.valor) * (SUM(CAO_FATURA.total_imp_inc)/100)), 2, 'de_DE') AS 'RECEITA LÍQUIDA'
+                                        FROM CAO_SISTEMA, CAO_CLIENTE,CAO_USUARIO, CAO_FATURA, CAO_OS WHERE CAO_SISTEMA.co_cliente = CAO_FATURA.co_cliente AND CAO_SISTEMA.co_sistema = CAO_FATURA.co_sistema
+                                        AND MONTH('$data_final') = MONTH(CAO_FATURA.data_emissao) AND YEAR('$data_final') = YEAR(CAO_FATURA.data_emissao)
+                                        AND CAO_OS.co_os = CAO_FATURA.co_os AND CAO_USUARIO.co_usuario = CAO_SISTEMA.co_usuario
+                                        AND CAO_CLIENTE.no_fantasia= '$cliente'");
                                         $result = $conexao->query($sql);
+                                        $j = 0;
                                         if ($result->num_rows > 0) {
                                             while($row = $result->fetch_assoc()){?>
-                                                <?php echo $row["RECEITA LÍQUIDA"];?>
+                                                <?php $receita_liquida2 = $row["RECEITA LÍQUIDA"];
+                                                array_push($soma_das_receitas2, $receita_liquida2)
+                                                ?>
+                                                <td><?php echo "R$ ".number_format((double)$receita_liquida2, 2,',','.');?></td>
                                             <?php
                                         }
                                     }?>
@@ -237,9 +250,22 @@
                                     <?php
                                     }
                                 ?>
+                                <td><?php echo "R$ ".number_format(array_sum($soma_das_receitas2), 2,',','.')?></td>
+                                
                         </tr>
                         <tr>
                             <td>TOTAL</td>
+                            <?php
+                                for ($i=0; $i <  count($soma_das_receitas1); $i++) { ?>
+                                    <td><?php echo "R$ ".number_format(((double)$soma_das_receitas1[$i] + (double) $soma_das_receitas2[$i]), 2,',','.');
+                                           array_push($soma_total,number_format((array_sum($soma_das_receitas2) + array_sum($soma_das_receitas2)), 2,',','.'));
+                                    ?></td>
+                               <?php 
+                               }
+                            ?>
+                            <td><?php
+                                echo "R$ ".number_format((array_sum($soma_das_receitas1) + array_sum($soma_das_receitas2)), 2,',','.');
+                            ?></td>
                         </tr>
                     </tbody>
                 </table>

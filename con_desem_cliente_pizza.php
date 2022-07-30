@@ -11,18 +11,18 @@
     <script src="./js/jquery.js"></script>
     <title>CAOL - Controle de Atividades Online - Agence Interativa</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
     <script type="text/javascript">
       google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
 
       function drawChart() {
-
         var data = google.visualization.arrayToDataTable([
           ['Clientes', 'Valores'],
-          ['Agence',1000],
+          ['Vivo',1000],
           ['Banco Bradesco MT',20000],
           ['Toyota do Brasil',1200],
-          ['Vivo',13000] 
+          ['Agence',13000] 
         ]);
 
         var options = {
